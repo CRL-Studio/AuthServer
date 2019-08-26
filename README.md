@@ -3,7 +3,6 @@
 - mkdir "folder"
 - Clone this project
 - go mod
-- git init
 - git flow install
     * Reference : https://danielkummer.github.io/git-flow-cheatsheet/index.zh_TW.html
     * mac : brew install git-flow-avh
