@@ -1,0 +1,32 @@
+company:
+    name: "CRLStudio"
+log:
+    path: "log/"
+    file: "app.log"
+server:
+    host: "0.0.0.0"
+    port: 80
+    timezone: "Asia/Taipei"
+db:
+    dialect: "mysql"
+    user: "root"
+    password: "123456"
+    host: "0.0.0.0"
+    port: 3306
+    database: "auth"
+    flag: "charset=utf8mb4&parseTime=True&loc=Local&collation=utf8mb4_unicode_ci"
+    interval: 60
+redis:
+    host: "0.0.0.0"
+    port: 6379
+    database: 0
+    auth: "AeLP6RFYQJdzayTRLrWZ64NxbTh7yhNt"
+    max_idle: 80
+    max_active: 12000
+    idle_timeout: 2500
+    notify_active: 1296000  # 15 days
+http:
+  header:
+    Access-Control-Allow-Origin: "*"
+    Access-Control-Allow-Headers: "Content-Type, Authorization"
+    Access-Control-Allow-Methods: "GET, POST, OPTIONS, HEAD, PATCH, DELETE"

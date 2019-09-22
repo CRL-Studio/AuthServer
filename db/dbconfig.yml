@@ -1,0 +1,17 @@
+test:
+    dialect: mysql
+    datasource: root:123456@tcp(0.0.0.0)/test?parseTime=true
+    dir: ./migrations
+    table: migrations
+
+development:
+    dialect: mysql
+    datasource: root:123456@tcp(0.0.0.0)/auth?parseTime=true
+    dir: ./migrations
+    table: migrations
+
+production:
+    dialect: mysql
+    datasource: root:123456@tcp(0.0.0.0)/auth?parseTime=true
+    dir: ./migrations
+    table: migrations
