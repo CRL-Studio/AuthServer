@@ -27,7 +27,7 @@ func (errorInput ErrorInput) errorReturn() *ErrorOutput {
 	var errorOutput ErrorOutput
 	if strings.EqualFold(errorInput.errorType, "Internal") == true {
 		//logger
-	} else if strings.EqualFold(errorInput.errorType, "EXternal") == true {
+	} else if strings.EqualFold(errorInput.errorType, "External") == true {
 		//logger
 	} else {
 		//logger
@@ -50,9 +50,9 @@ func GetErrorReturn(errorType string, code int, message string, err *error) Erro
 	var msg string
 	switch errorType {
 	case "Internal":
-		msg = InternalError(code, message, err)
+		msg = InternalError(code, message)
 	case "External":
-		msg = ExternalError(code, message, err)
+		msg = ExternalError(code, message)
 	default:
 		code = 999
 		msg = "Unexpected Error"

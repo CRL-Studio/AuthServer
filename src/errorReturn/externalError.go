@@ -1,16 +1,16 @@
 package errorreturn
 
 // ExternalError to define the enternal error
-func ExternalError(code int, message string, err *error) (msg string) {
+func ExternalError(code int, message string) (msg string) {
 	switch code {
 	case 400:
-		msg = "E參數錯誤" + message
+		msg = "參數錯誤" + message
 	case 436:
-		msg = "E問號錯誤"
+		msg = "問號錯誤"
 	case 500:
-		msg = "E錯誤"
+		msg = "錯誤"
 	default:
-		msg = "E無預期錯誤"
+		msg = "無預期錯誤"
 	}
 	return
 }
