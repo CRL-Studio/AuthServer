@@ -15,8 +15,8 @@
 - Machine : Docker
 - Language : Golang
 - Golang Framework : IRIS
-- Database : mySQL、Redis
+- Database : MySQL、Redis
 
 ## Main Function
-- Member Micro Service 
+- Auth & Member Micro Service 
 

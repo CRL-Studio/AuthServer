@@ -1,6 +1,8 @@
 package userdao
 
 import (
+	"time"
+
 	"github.com/CRL-Studio/AuthServer/src/models"
 	"github.com/jinzhu/gorm"
 )
@@ -8,9 +10,19 @@ import (
 const table = "user"
 
 type model struct {
-	ID      int64  `gorm:"column:id; primary_key"`
-	UUID    string `gorm:"column:uuid; unique_index"`
-	Account string `gorm:"column:account; unique_index"`
+	ID           int64      `gorm:"column:id; primary_key"`
+	UUID         string     `gorm:"column:uuid; unique_index"`
+	RoleUUID     string     `gorm:"column:role_uuid"`
+	Account      string     `gorm:"column:account; unique_index"`
+	Name         string     `gorm:"column:name"`
+	Email        string     `gorm:"column:email; unique_index"`
+	Status       string     `gorm:"column:status; default:'enabled'"`
+	Score        int        `gorm:"column:score"`
+	Verification bool       `gorm:"column:verification"`
+	CreatedAt    time.Time  `gorm:"column:created_at"`
+	UpdatedAt    *time.Time `gorm:"column:updated_at"`
+	CreatedBy    string     `gorm:"column:created_by"`
+	UpdatedBy    string     `gorm:"column:updated_by"`
 }
 
 // QueryModel is used for possible query column
@@ -23,8 +35,17 @@ type QueryModel struct {
 func New(tx *gorm.DB, user *models.User) {
 	err := tx.Table(table).
 		Create(&models.User{
-			UUID:    user.UUID,
-			Account: user.Account,
+			UUID:         user.UUID,
+			Account:      user.Account,
+			RoleUUID:     user.Role.UUID,
+			Password:     user.Password,
+			Name:         user.Name,
+			Email:        user.Email,
+			Status:       user.Status,
+			Score:        user.Score,
+			Verification: user.Verification,
+			CreatedBy:    user.UpdatedBy,
+			CreatedAt:    time.Now(),
 		}).Error
 
 	if err != nil {
@@ -118,7 +139,17 @@ func queryChain(query *QueryModel) func(db *gorm.DB) *gorm.DB {
 
 func mapping(tx *gorm.DB, model *models.User) *models.User {
 	return &models.User{
-		ID:   model.ID,
-		UUID: model.UUID,
+		ID:           model.ID,
+		UUID:         model.UUID,
+		Account:      model.Account,
+		RoleUUID:     model.Role.UUID,
+		Password:     model.Password,
+		Name:         model.Name,
+		Email:        model.Email,
+		Status:       model.Status,
+		Score:        model.Score,
+		Verification: model.Verification,
+		CreatedBy:    model.UpdatedBy,
+		CreatedAt:    time.Now(),
 	}
 }

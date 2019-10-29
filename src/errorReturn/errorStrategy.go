@@ -1,7 +1,8 @@
 package errorreturn
 
 import (
-	"strings"
+	"github.com/CRL-Studio/AuthServer/src/utils/glossary"
+	"github.com/CRL-Studio/AuthServer/src/utils/logger"
 )
 
 // ErrorStrategy to check the error function
@@ -25,13 +26,8 @@ type ErrorOutput struct {
 
 func (errorInput ErrorInput) errorReturn() *ErrorOutput {
 	var errorOutput ErrorOutput
-	if strings.EqualFold(errorInput.errorType, "Internal") == true {
-		//logger
-	} else if strings.EqualFold(errorInput.errorType, "External") == true {
-		//logger
-	} else {
-		//logger
-	}
+	log := logger.Log()
+	log.Error(errorInput)
 	errorOutput.code = errorInput.code
 	errorOutput.message = errorInput.message
 	return &errorOutput
@@ -49,9 +45,9 @@ func Error(strategy ErrorStrategy) *ErrorOutput {
 func GetErrorReturn(errorType string, code int, message string, err *error) ErrorStrategy {
 	var msg string
 	switch errorType {
-	case "Internal":
+	case glossary.ErrorTypeInternal:
 		msg = InternalError(code, message)
-	case "External":
+	case glossary.ErrorTypeExternal:
 		msg = ExternalError(code, message)
 	default:
 		code = 999

@@ -30,9 +30,9 @@ func AuthMiddleware(ctx iris.Context) {
 			})
 			return
 		}
-
-		ctx.Next()
 	*/
+	ctx.Next()
+
 }
 
 /*

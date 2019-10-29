@@ -19,5 +19,6 @@ func failed(ctx iris.Context, err *errorreturn.ErrorOutput) {
 	ctx.JSON(iris.Map{
 		"code":    err.Code(),
 		"message": err.Error(),
+		"data":    "",
 	})
 }

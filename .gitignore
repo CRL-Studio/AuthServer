@@ -1,0 +1,12 @@
+# log file
+*.log
+
+# config file
+dbconfig.yml
+config.yml
+
+# playground file
+playground/*.go
+
+# binary file
+authserver

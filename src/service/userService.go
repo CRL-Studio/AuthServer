@@ -5,25 +5,45 @@ import (
 	"reflect"
 
 	gormdao "github.com/CRL-Studio/AuthServer/src/dao/gorm"
+	userdao "github.com/CRL-Studio/AuthServer/src/dao/gorm/userDao"
+	"github.com/CRL-Studio/AuthServer/src/models"
+	"github.com/CRL-Studio/AuthServer/src/utils/glossary"
+	"github.com/CRL-Studio/AuthServer/src/utils/hash"
+	"github.com/CRL-Studio/AuthServer/src/utils/logger"
+	uuid "github.com/satori/go.uuid"
 )
 
-//CreateUser is 
+//CreateUser is
 func CreateUser(params interface{}) (result map[string]interface{}, err error) {
-	tx := gormdao.DB()
+	tx := gormdao.DB().Begin()
+	log := logger.Log()
 	defer func() {
 		if r := recover(); r != nil {
+			tx.Rollback()
+			log.Error(r)
 		}
 	}()
 
 	value := reflect.ValueOf(params)
 
-	fmt.Println(value)
-	fmt.Println(tx)
+	user := &models.User{}
+	user.UUID = uuid.NewV4().String()
+	user.Role = &models.Role{UUID: glossary.RoleMember}
+	user.Account = value.FieldByName("Account").String()
+	user.Password = hash.New(value.FieldByName("Password").String())
+	user.Name = value.FieldByName("Name").String()
+	user.Email = value.FieldByName("Email").String()
+	user.Score = 0
+	user.Status = glossary.StatusEnabled
+	user.Verification = false
+	user.CreatedBy = value.FieldByName("Account").String()
+
+	userdao.New(tx, user)
 
 	return result, nil
 }
 
-//CreateUserCheck is 
+//CreateUserCheck is
 func CreateUserCheck(params interface{}) (result map[string]interface{}, err error) {
 	tx := gormdao.DB()
 	defer func() {
@@ -39,7 +59,7 @@ func CreateUserCheck(params interface{}) (result map[string]interface{}, err err
 	return result, nil
 }
 
-//UserInfo is 
+//UserInfo is
 func UserInfo(params interface{}) (result map[string]interface{}, err error) {
 	tx := gormdao.DB()
 	defer func() {
@@ -55,7 +75,7 @@ func UserInfo(params interface{}) (result map[string]interface{}, err error) {
 	return result, nil
 }
 
-//UpdateUserInfo is 
+//UpdateUserInfo is
 func UpdateUserInfo(params interface{}) (result map[string]interface{}, err error) {
 	tx := gormdao.DB()
 	defer func() {
@@ -71,8 +91,7 @@ func UpdateUserInfo(params interface{}) (result map[string]interface{}, err erro
 	return result, nil
 }
 
-
-//UpdatePassword is 
+//UpdatePassword is
 func UpdatePassword(params interface{}) (result map[string]interface{}, err error) {
 	tx := gormdao.DB()
 	defer func() {
@@ -88,8 +107,7 @@ func UpdatePassword(params interface{}) (result map[string]interface{}, err erro
 	return result, nil
 }
 
-
-//ResetPassword is 
+//ResetPassword is
 func ResetPassword(params interface{}) (result map[string]interface{}, err error) {
 	tx := gormdao.DB()
 	defer func() {
