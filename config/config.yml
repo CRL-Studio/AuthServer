@@ -24,7 +24,7 @@ redis:
     max_idle: 80
     max_active: 12000
     idle_timeout: 2500
-    notify_active: 1296000  # 15 days
+    verification_active: 300 # 5 minutes
 http:
   header:
     Access-Control-Allow-Origin: "*"

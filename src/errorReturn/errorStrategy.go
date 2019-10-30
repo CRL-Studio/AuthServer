@@ -14,7 +14,7 @@ type ErrorStrategy interface {
 type ErrorInput struct {
 	code      int
 	message   string
-	err       *error
+	err       string
 	errorType string
 }
 
@@ -42,7 +42,7 @@ func Error(strategy ErrorStrategy) *ErrorOutput {
 }
 
 // GetErrorReturn to choose the error
-func GetErrorReturn(errorType string, code int, message string, err *error) ErrorStrategy {
+func GetErrorReturn(errorType string, code int, message string, err string) ErrorStrategy {
 	var msg string
 	switch errorType {
 	case glossary.ErrorTypeInternal:

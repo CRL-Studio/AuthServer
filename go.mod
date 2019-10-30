@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
+	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/denisenkom/go-mssqldb v0.0.0-20190830225923-3302f0226fbd // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gavv/monotime v0.0.0-20190418164738-30dba4353424 // indirect

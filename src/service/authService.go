@@ -10,12 +10,13 @@ import (
 )
 
 //Login is login
-func Login(params interface{}) (result map[string]interface{}, err error) {
+func Login(params interface{}) (result map[string]interface{}, outputError string) {
 	tx := gormdao.DB()
 	log := logger.Log()
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error(r)
+			outputError = "Unexpected Error"
 		}
 	}()
 
@@ -27,16 +28,16 @@ func Login(params interface{}) (result map[string]interface{}, err error) {
 		"Role":    operator.Role,
 		"Score":   operator.Score,
 	}
-
-	return result, nil
+	return result, ""
 }
 
 //Logout is login
-func Logout(params interface{}) (result map[string]interface{}, err error) {
+func Logout(params interface{}) (result map[string]interface{}, outputError string) {
 	log := logger.Log()
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error(r)
+			outputError = "Unexpected Error"
 		}
 	}()
 
@@ -46,5 +47,5 @@ func Logout(params interface{}) (result map[string]interface{}, err error) {
 		panic(err)
 	}
 
-	return result, nil
+	return result, ""
 }

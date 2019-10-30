@@ -1,13 +1,21 @@
 package keybuilder
 
 const (
-	jti          = "JTI"
-	refreshToken = "REFRESH_TOKEN"
-	secret       = "SECRET"
-	set          = "SET"
-	permission   = "PERMISSION"
-	notify       = "NOTIFY"
+	jti              = "JTI"
+	refreshToken     = "REFRESH_TOKEN"
+	secret           = "SECRET"
+	set              = "SET"
+	permission       = "PERMISSION"
+	verificationcode = "VERIFICATION"
 )
+
+// Verification builds a key looks like Verification
+func Verification(account string) string {
+	return dash(
+		account,
+		verificationcode,
+	)
+}
 
 // Jti builds a key looks like {account}-JTI
 func Jti(account string) string {
@@ -47,14 +55,6 @@ func RolePermission(role, method string) string {
 		role,
 		method,
 		permission,
-	)
-}
-
-// Notify builds a key looks like NOTIFY
-func Notify(orderNo string) string {
-	return dash(
-		orderNo,
-		notify,
 	)
 }
 

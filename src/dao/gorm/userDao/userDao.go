@@ -3,17 +3,19 @@ package userdao
 import (
 	"time"
 
+	roledao "github.com/CRL-Studio/AuthServer/src/dao/gorm/roleDao"
 	"github.com/CRL-Studio/AuthServer/src/models"
 	"github.com/jinzhu/gorm"
 )
 
 const table = "user"
 
-type model struct {
+type pattern struct {
 	ID           int64      `gorm:"column:id; primary_key"`
 	UUID         string     `gorm:"column:uuid; unique_index"`
 	RoleUUID     string     `gorm:"column:role_uuid"`
 	Account      string     `gorm:"column:account; unique_index"`
+	Password     string     `gorm:"column:password"`
 	Name         string     `gorm:"column:name"`
 	Email        string     `gorm:"column:email; unique_index"`
 	Status       string     `gorm:"column:status; default:'enabled'"`
@@ -34,10 +36,10 @@ type QueryModel struct {
 // New a row
 func New(tx *gorm.DB, user *models.User) {
 	err := tx.Table(table).
-		Create(&models.User{
+		Create(&pattern{
 			UUID:         user.UUID,
-			Account:      user.Account,
 			RoleUUID:     user.Role.UUID,
+			Account:      user.Account,
 			Password:     user.Password,
 			Name:         user.Name,
 			Email:        user.Email,
@@ -80,10 +82,10 @@ func Delete(tx *gorm.DB, user *models.User) {
 
 // GetByUUID return a record found by uuid (after mapping)
 func GetByUUID(tx *gorm.DB, uuid string) *models.User {
-	var result models.User
+	result := &pattern{}
 	err := tx.Table(table).
 		Where("user.uuid = ?", uuid).
-		Scan(&result).Error
+		Scan(result).Error
 
 	if gorm.IsRecordNotFoundError(err) {
 		return nil
@@ -92,15 +94,15 @@ func GetByUUID(tx *gorm.DB, uuid string) *models.User {
 		panic(err)
 	}
 
-	return mapping(tx, &result)
+	return mapping(tx, result)
 }
 
 // GetByAccount return a record found by account (after mapping)
 func GetByAccount(tx *gorm.DB, account string) *models.User {
-	var result models.User
+	result := &pattern{}
 	err := tx.Table(table).
 		Where("user.account = ?", account).
-		Scan(&result).Error
+		Scan(result).Error
 
 	if gorm.IsRecordNotFoundError(err) {
 		return nil
@@ -109,7 +111,7 @@ func GetByAccount(tx *gorm.DB, account string) *models.User {
 		panic(err)
 	}
 
-	return mapping(tx, &result)
+	return mapping(tx, result)
 }
 
 // Get return a record as raw-data-form
@@ -137,19 +139,19 @@ func queryChain(query *QueryModel) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func mapping(tx *gorm.DB, model *models.User) *models.User {
+func mapping(tx *gorm.DB, pattern *pattern) *models.User {
 	return &models.User{
-		ID:           model.ID,
-		UUID:         model.UUID,
-		Account:      model.Account,
-		RoleUUID:     model.Role.UUID,
-		Password:     model.Password,
-		Name:         model.Name,
-		Email:        model.Email,
-		Status:       model.Status,
-		Score:        model.Score,
-		Verification: model.Verification,
-		CreatedBy:    model.UpdatedBy,
+		ID:           pattern.ID,
+		UUID:         pattern.UUID,
+		Account:      pattern.Account,
+		Role:         roledao.GetByUUID(tx, pattern.RoleUUID),
+		Password:     pattern.Password,
+		Name:         pattern.Name,
+		Email:        pattern.Email,
+		Status:       pattern.Status,
+		Score:        pattern.Score,
+		Verification: pattern.Verification,
+		CreatedBy:    pattern.UpdatedBy,
 		CreatedAt:    time.Now(),
 	}
 }

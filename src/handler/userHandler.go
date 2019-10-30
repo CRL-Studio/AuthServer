@@ -35,22 +35,23 @@ func CreateHandler(ctx iris.Context) {
 
 	// validate
 	if _, err := govalidator.ValidateStruct(params); err != nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "", &err))
+		errorOutput := err.Error()
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "", errorOutput))
 		failed(ctx, output)
 		return
 	}
 
 	account := userdao.Get(tx, &userdao.QueryModel{Account: params.Account})
 	if account != nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "該帳號已被使用", nil))
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "該帳號已被使用", ""))
 		failed(ctx, output)
 		return
 	}
 
 	result, err := service.CreateUser(params)
 
-	if err == nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", &err))
+	if err != "" {
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", err))
 		failed(ctx, output)
 		return
 	}
@@ -59,20 +60,46 @@ func CreateHandler(ctx iris.Context) {
 	return
 }
 
-//CreateCheckHandler to do
-func CreateCheckHandler(ctx iris.Context) {
+//VerificationCheckHandler to do
+func VerificationCheckHandler(ctx iris.Context) {
+	tx := gormdao.DB()
+	log := logger.Log()
+
+	defer func() {
+		if r := recover(); r != nil {
+			log.Error(r)
+		}
+	}()
+
 	type input struct {
 		Account      string `valid:"required"`
 		Verification string `valid:"required"`
 	}
+
 	params := &input{
 		Account:      ctx.FormValue("Account"),
 		Verification: ctx.FormValue("Verification"),
 	}
-	result, err := service.CreateUserCheck(params)
 
-	if err == nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", &err))
+	// validate
+	if _, err := govalidator.ValidateStruct(params); err != nil {
+		errorOutput := err.Error()
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "", errorOutput))
+		failed(ctx, output)
+		return
+	}
+
+	account := userdao.Get(tx, &userdao.QueryModel{Account: params.Account})
+	if account == nil {
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "找不到此帳號", ""))
+		failed(ctx, output)
+		return
+	}
+
+	result, err := service.UserVerificationCheck(params)
+
+	if err != "" {
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", err))
 		failed(ctx, output)
 		return
 	}
@@ -91,10 +118,20 @@ func UserInfoHandler(ctx iris.Context) {
 		Account:  ctx.FormValue("Account"),
 		Password: ctx.FormValue("Password"),
 	}
+
+	// validate
+	if _, err := govalidator.ValidateStruct(params); err != nil {
+		errorOutput := err.Error()
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "", errorOutput))
+		failed(ctx, output)
+		return
+	}
+
 	result, err := service.UserInfo(params)
 
-	if err == nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", &err))
+	if err != "" {
+
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", err))
 		failed(ctx, output)
 		return
 	}
@@ -113,10 +150,18 @@ func UpdateUserInfoHandler(ctx iris.Context) {
 		Account:  ctx.FormValue("Account"),
 		Password: ctx.FormValue("Password"),
 	}
+
+	// validate
+	if _, err := govalidator.ValidateStruct(params); err != nil {
+		errorOutput := err.Error()
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusBadRequest, "", errorOutput))
+		failed(ctx, output)
+		return
+	}
 	result, err := service.UpdateUserInfo(params)
 
-	if err == nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", &err))
+	if err != "" {
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", err))
 		failed(ctx, output)
 		return
 	}
@@ -137,8 +182,8 @@ func UpdatePasswordHandler(ctx iris.Context) {
 	}
 	result, err := service.UpdatePassword(params)
 
-	if err == nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", &err))
+	if err != "" {
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", err))
 		failed(ctx, output)
 		return
 	}
@@ -159,8 +204,8 @@ func ResetPasswordHandler(ctx iris.Context) {
 	}
 	result, err := service.ResetPassword(params)
 
-	if err == nil {
-		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", &err))
+	if err != "" {
+		output := errorreturn.Error(errorreturn.GetErrorReturn(glossary.ErrorTypeInternal, iris.StatusInternalServerError, "", err))
 		failed(ctx, output)
 		return
 	}
