@@ -57,7 +57,41 @@ func New(tx *gorm.DB, user *models.User) {
 
 // Modify a row
 func Modify(tx *gorm.DB, user *models.User) {
-	attrs := map[string]interface{}{}
+	attrs := map[string]interface{}{
+		"Name": user.Name,
+	}
+
+	err := tx.Table(table).
+		Model(models.User{}).
+		Where("uuid = ?", user.UUID).
+		Updates(attrs).Error
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+// ModifyVerification a row
+func ModifyVerification(tx *gorm.DB, user *models.User) {
+	attrs := map[string]interface{}{
+		"verification": user.Verification,
+	}
+
+	err := tx.Table(table).
+		Model(models.User{}).
+		Where("uuid = ?", user.UUID).
+		Updates(attrs).Error
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+// ModifyPassword a row
+func ModifyPassword(tx *gorm.DB, user *models.User) {
+	attrs := map[string]interface{}{
+		"password": user.Password,
+	}
 
 	err := tx.Table(table).
 		Model(models.User{}).

@@ -34,6 +34,8 @@ func Run() {
 			user.Post("/create", hero.Handler(handler.CreateHandler))
 			//創建新帳號-憑證碼驗證
 			user.Post("/verification", hero.Handler(handler.VerificationCheckHandler))
+			//重送驗證碼
+			user.Post("/resend-verification", hero.Handler(handler.ResendVerificationHandler))
 			//取得帳號資訊
 			user.Get("/info", hero.Handler(handler.UserInfoHandler))
 			//修改帳號資訊
