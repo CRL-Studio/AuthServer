@@ -1,6 +1,9 @@
 # log file
 *.log
 
+# goland file 
+.idea/
+
 # config file
 dbconfig.yml
 config.yml
