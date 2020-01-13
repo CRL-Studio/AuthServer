@@ -111,6 +111,7 @@ func UpdateUserInfo(params interface{}) (result map[string]interface{}, outputEr
 	tx := gormdao.DB()
 	defer func() {
 		if r := recover(); r != nil {
+			log.Error(r)
 		}
 	}()
 
